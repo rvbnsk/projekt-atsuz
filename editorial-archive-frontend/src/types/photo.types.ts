@@ -1,0 +1,69 @@
+export type PhotoStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'NEEDS_CORRECTION'
+
+export interface Photo {
+  id: string
+  uploaderId: string
+  uploaderName: string
+  hierarchyNodeId: string | null
+  hierarchyNodeName: string | null
+  title: string
+  description: string | null
+  accessionNumber: string | null
+  thumbnailKey: string | null
+  mediumKey: string | null
+  storageKey: string
+  originalFilename: string | null
+  mimeType: string | null
+  fileSizeBytes: number | null
+  widthPx: number | null
+  heightPx: number | null
+  photoDateFrom: string | null
+  photoDateTo: string | null
+  photoDateLabel: string | null
+  locationName: string | null
+  latitude: number | null
+  longitude: number | null
+  rightsStatement: string
+  licenseNotes: string | null
+  status: PhotoStatus
+  rejectionReason: string | null
+  viewCount: number
+  tags: Tag[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Tag {
+  id: string
+  name: string
+  slug: string
+}
+
+export interface PhotoSearchParams {
+  q?: string
+  nodeId?: string
+  yearFrom?: number
+  yearTo?: number
+  tags?: string[]
+  lat?: number
+  lng?: number
+  radiusKm?: number
+  status?: PhotoStatus
+  page?: number
+  size?: number
+  sort?: string
+}
+
+export interface PhotoUploadRequest {
+  title: string
+  description?: string
+  nodeId?: string
+  tags?: string[]
+  photoDateFrom?: string
+  photoDateTo?: string
+  photoDateLabel?: string
+  locationName?: string
+  latitude?: number
+  longitude?: number
+  rightsStatement?: string
+}

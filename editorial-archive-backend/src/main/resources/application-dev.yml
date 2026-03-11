@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    show-sql: true
+  flyway:
+    baseline-on-migrate: true
+
+logging:
+  level:
+    pl.editorial.archive: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
