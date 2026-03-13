@@ -137,6 +137,11 @@ projekt-atsuz/
 | Zdjęcia | POST | `/api/v1/photos` | CREATOR+ |
 | Zdjęcia | PATCH | `/api/v1/photos/{id}/status` | ADMIN |
 | Hierarchia | GET | `/api/v1/hierarchy` | Public |
+| Hierarchia | GET | `/api/v1/hierarchy/{id}` | Public |
+| Hierarchia | GET | `/api/v1/hierarchy/{id}/breadcrumbs` | Public |
+| Hierarchia | POST | `/api/v1/hierarchy` | ADMIN |
+| Hierarchia | PUT | `/api/v1/hierarchy/{id}` | ADMIN |
+| Hierarchia | DELETE | `/api/v1/hierarchy/{id}` | ADMIN |
 | Tagi | GET | `/api/v1/tags` | Public |
 | Admin | GET | `/api/v1/admin/audit` | ADMIN |
 | Admin | GET | `/api/v1/admin/stats` | ADMIN |
@@ -219,8 +224,8 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 
 ## Co jest do zrobienia (kolejne etapy)
 
+- [x] Backend: HierarchyController + HierarchyService (drzewo, breadcrumbs, CRUD + auto-slug)
 - [ ] Backend: PhotoController (upload, search, CRUD)
-- [ ] Backend: HierarchyController + HierarchyService
 - [ ] Backend: StorageService (MinIO/S3) + ImageProcessingService (Thumbnailator)
 - [ ] Backend: AdminController (moderacja, audit, stats, batch)
 - [ ] Backend: OAuth2 (Google + Facebook)
