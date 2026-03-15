@@ -225,7 +225,10 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 ## Co jest do zrobienia (kolejne etapy)
 
 - [x] Backend: HierarchyController + HierarchyService (drzewo, breadcrumbs, CRUD + auto-slug)
-- [ ] Backend: PhotoController (upload, search, CRUD)
+- [x] Backend: PhotoService + PhotoController (CRUD, FTS search, upload, moderacja)
+- [x] Backend: AuditService (zapis zdarzeń w REQUIRES_NEW)
+- [x] Backend: TagService + TagController (lista, autocomplete, CRUD Admin)
+- [x] Backend: StorageService interface + StubStorageService (dev no-op)
 - [ ] Backend: StorageService (MinIO/S3) + ImageProcessingService (Thumbnailator)
 - [ ] Backend: AdminController (moderacja, audit, stats, batch)
 - [ ] Backend: OAuth2 (Google + Facebook)
