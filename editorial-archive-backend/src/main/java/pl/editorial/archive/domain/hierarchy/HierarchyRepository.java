@@ -20,7 +20,7 @@ public interface HierarchyRepository extends JpaRepository<HierarchyNode, UUID> 
 
     List<HierarchyNode> findByLevel(short level);
 
-    @Query("""
+    @Query(value = """
         WITH RECURSIVE ancestors AS (
             SELECT h.* FROM hierarchy_nodes h WHERE h.id = :nodeId
             UNION ALL
@@ -28,10 +28,10 @@ public interface HierarchyRepository extends JpaRepository<HierarchyNode, UUID> 
             INNER JOIN ancestors a ON p.id = a.parent_id
         )
         SELECT * FROM ancestors ORDER BY level ASC
-        """)
+        """, nativeQuery = true)
     List<HierarchyNode> findBreadcrumbs(@Param("nodeId") UUID nodeId);
 
-    @Query("""
+    @Query(value = """
         WITH RECURSIVE descendants AS (
             SELECT id FROM hierarchy_nodes WHERE id = :nodeId
             UNION ALL
@@ -39,6 +39,6 @@ public interface HierarchyRepository extends JpaRepository<HierarchyNode, UUID> 
             INNER JOIN descendants d ON h.parent_id = d.id
         )
         SELECT id FROM descendants
-        """)
+        """, nativeQuery = true)
     List<UUID> findAllDescendantIds(@Param("nodeId") UUID nodeId);
 }
