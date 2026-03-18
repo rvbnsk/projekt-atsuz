@@ -26,6 +26,11 @@ public class StubStorageService implements StorageService {
     }
 
     @Override
+    public void storeBytes(byte[] data, String key, String contentType) {
+        log.info("[StubStorage] storeBytes: key={}, size={}B", key, data.length);
+    }
+
+    @Override
     public String presignedUrl(String storageKey, int expirySeconds) {
         return "/api/v1/photos/file/" + storageKey;
     }

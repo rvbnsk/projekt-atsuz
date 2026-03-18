@@ -13,6 +13,9 @@ public interface StorageService {
     /** Zapisuje plik i zwraca klucz (storage key). */
     String store(MultipartFile file, String keyPrefix);
 
+    /** Zapisuje surowe bajty pod podanym kluczem. */
+    void storeBytes(byte[] data, String key, String contentType);
+
     /** Generuje presigned URL ważny przez podaną liczbę sekund. */
     String presignedUrl(String storageKey, int expirySeconds);
 

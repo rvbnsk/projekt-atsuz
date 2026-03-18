@@ -59,6 +59,7 @@ app:
     access-key: ${S3_ACCESS_KEY:minioadmin}
     secret-key: ${S3_SECRET_KEY:minioadmin}
     region: ${S3_REGION:us-east-1}
+    use-stub: ${STORAGE_USE_STUB:true}  # false = używa MinIO/S3
 
 management:
   endpoints:

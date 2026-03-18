@@ -17,6 +17,7 @@ import pl.editorial.archive.domain.tag.Tag;
 import pl.editorial.archive.domain.tag.TagRepository;
 import pl.editorial.archive.domain.user.User;
 import pl.editorial.archive.domain.user.UserRepository;
+import pl.editorial.archive.storage.ImageProcessingService;
 import pl.editorial.archive.storage.StorageService;
 
 import java.util.*;
@@ -31,6 +32,7 @@ public class PhotoService {
     private final HierarchyRepository hierarchyRepository;
     private final TagRepository tagRepository;
     private final StorageService storageService;
+    private final ImageProcessingService imageProcessingService;
     private final AuditService auditService;
 
     // ── Public ────────────────────────────────────────────────────
@@ -116,6 +118,10 @@ public class PhotoService {
 
         Photo saved = photoRepository.save(photo);
         auditService.log(uploaderId, "PHOTO_UPLOADED", "PHOTO", saved.getId(), null);
+
+        // Generowanie miniatur asynchronicznie (nie blokuje odpowiedzi)
+        imageProcessingService.generateAndStoreThumbnails(saved.getId(), saved.getStorageKey());
+
         return toResponse(saved);
     }
 
