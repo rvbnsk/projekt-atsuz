@@ -230,7 +230,8 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Backend: TagService + TagController (lista, autocomplete, CRUD Admin)
 - [x] Backend: StorageService interface + StubStorageService (dev) + S3StorageService (prod, MinIO)
 - [x] Backend: ImageProcessingService — miniatury 400px + medium 1200px (async, Thumbnailator)
-- [ ] Backend: AdminController (moderacja, audit, stats, batch)
+- [x] Backend: AdminController — audit log (z filtrami), statystyki systemu
+- [x] Backend: UserService + UserController — lista, block/unblock, zmiana roli, usuwanie
 - [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
 - [ ] Frontend: TopAppBar + SideNav + BottomNav
