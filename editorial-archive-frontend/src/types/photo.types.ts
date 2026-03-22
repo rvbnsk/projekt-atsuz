@@ -9,8 +9,8 @@ export interface Photo {
   title: string
   description: string | null
   accessionNumber: string | null
-  thumbnailKey: string | null
-  mediumKey: string | null
+  thumbnailUrl: string | null
+  mediumUrl: string | null
   storageKey: string
   originalFilename: string | null
   mimeType: string | null

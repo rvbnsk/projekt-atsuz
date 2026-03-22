@@ -5,7 +5,7 @@ export default function DashboardPage() {
   const { user } = useAuthStore()
 
   return (
-    <main className="min-h-screen p-8" style={{ background: 'var(--color-background)' }}>
+    <div className="p-8">
       <h1
         className="text-3xl mb-2"
         style={{ fontFamily: 'var(--font-headline)', color: 'var(--color-primary)' }}
@@ -32,6 +32,6 @@ export default function DashboardPage() {
           Moja kolekcja
         </Link>
       </div>
-    </main>
+    </div>
   )
 }

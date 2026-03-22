@@ -1,6 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { lazy, Suspense } from 'react'
+import PageLayout from '@/components/layout/PageLayout/PageLayout'
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import('@/pages/HomePage'))
@@ -36,6 +37,15 @@ function ProtectedRoute({
   return <>{children}</>
 }
 
+// Layout route — wraps all pages with TopAppBar + BottomNav
+function Layout() {
+  return (
+    <PageLayout>
+      <Outlet />
+    </PageLayout>
+  )
+}
+
 // Page loading fallback
 function PageLoader() {
   return (
@@ -60,63 +70,65 @@ export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* Publiczne */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/explore/:nodeId" element={<ExplorePage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/photos/:id" element={<PhotoDetailPage />} />
+        <Route element={<Layout />}>
+          {/* Publiczne */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/explore/:nodeId" element={<ExplorePage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/photos/:id" element={<PhotoDetailPage />} />
 
-        {/* Auth */}
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/register" element={<RegisterPage />} />
+          {/* Auth */}
+          <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
 
-        {/* Creator */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/upload"
-          element={
-            <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
-              <UploadPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/my-collection"
-          element={
-            <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
-              <MyCollectionPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Creator */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
+                <UploadPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-collection"
+            element={
+              <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
+                <MyCollectionPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Admin */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute roles={['ADMIN']}>
-              <AdminDashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/moderation"
-          element={
-            <ProtectedRoute roles={['ADMIN']}>
-              <ModerationPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Admin */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute roles={['ADMIN']}>
+                <AdminDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/moderation"
+            element={
+              <ProtectedRoute roles={['ADMIN']}>
+                <ModerationPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+          {/* 404 */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
     </Suspense>
   )
