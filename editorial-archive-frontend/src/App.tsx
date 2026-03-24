@@ -15,6 +15,8 @@ const UploadPage = lazy(() => import('@/pages/creator/UploadPage'))
 const MyCollectionPage = lazy(() => import('@/pages/creator/MyCollectionPage'))
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'))
 const ModerationPage = lazy(() => import('@/pages/admin/ModerationPage'))
+const MapPage = lazy(() => import('@/pages/MapPage'))
+const TimelinePage = lazy(() => import('@/pages/TimelinePage'))
 
 // Protected Route component
 function ProtectedRoute({
@@ -77,6 +79,8 @@ export default function App() {
           <Route path="/explore/:nodeId" element={<ExplorePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/photos/:id" element={<PhotoDetailPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/timeline" element={<TimelinePage />} />
 
           {/* Auth */}
           <Route path="/auth/login" element={<LoginPage />} />

@@ -7,9 +7,11 @@ import ThemeToggle from '@/components/ui/ThemeToggle/ThemeToggle'
 import { cn } from '@/utils/cn'
 
 const navLinks = [
-  { to: '/',        label: 'Strona główna', exact: true },
-  { to: '/explore', label: 'Przeglądaj' },
-  { to: '/search',  label: 'Szukaj' },
+  { to: '/',         label: 'Strona główna', exact: true },
+  { to: '/explore',  label: 'Przeglądaj' },
+  { to: '/search',   label: 'Szukaj' },
+  { to: '/map',      label: 'Mapa' },
+  { to: '/timeline', label: 'Oś czasu' },
 ]
 
 export default function TopAppBar() {

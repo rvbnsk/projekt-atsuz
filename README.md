@@ -107,8 +107,15 @@ projekt-atsuz/
 │
 ├── editorial-archive-frontend/         # React + TypeScript
 │   ├── src/
-│   │   ├── api/                        # Axios client + endpointy
-│   │   ├── pages/                      # Strony (Home, Explore, Auth, Creator, Admin)
+│   │   ├── api/                        # Axios client + endpointy (auth, photos, hierarchy, tags)
+│   │   ├── components/
+│   │   │   ├── layout/                 # TopAppBar, BottomNav, PageLayout
+│   │   │   ├── photo/                  # PhotoCard, PhotoGrid
+│   │   │   ├── hierarchy/              # HierarchyTree, HierarchyBreadcrumb
+│   │   │   ├── map/                    # ArchiveMap (react-leaflet)
+│   │   │   └── ui/                     # Skeleton, ThemeToggle
+│   │   ├── hooks/                      # usePhotos, useHierarchy (React Query)
+│   │   ├── pages/                      # Strony (Home, Explore, Search, Map, Timeline, Auth, Creator, Admin)
 │   │   ├── store/                      # Zustand (auth, theme)
 │   │   ├── types/                      # TypeScript types
 │   │   └── styles/globals.css          # Design tokens (CSS variables)
@@ -202,45 +209,55 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] OpenAPI/Swagger konfiguracja
 - [x] CleanupScheduler (wygasłe tokeny)
 - [x] Dockerfile (multi-stage, JRE 21)
+- [x] HierarchyService + HierarchyController (drzewo, breadcrumbs, CRUD)
+- [x] PhotoService + PhotoController (CRUD, FTS search, upload, moderacja)
+- [x] TagService + TagController (lista, autocomplete, CRUD admin)
+- [x] AuditService (zapis zdarzeń w REQUIRES_NEW)
+- [x] StorageService: StubStorageService (dev) + S3StorageService (prod, MinIO)
+- [x] ImageProcessingService — miniatury 400px + medium 1200px (async, Thumbnailator)
+- [x] AdminController — audit log (z filtrami), statystyki systemu
+- [x] UserService + UserController — lista, block/unblock, zmiana roli
 
 ### Frontend ✅
 - [x] Vite + React 18 + TypeScript
-- [x] Tailwind CSS + Design tokens (CSS variables)
-- [x] React Query + Axios client z JWT interceptorem
-- [x] Zustand stores: auth (persist) + theme (light/dark/contrast)
-- [x] React Router v6 + protected routes
+- [x] Tailwind CSS + Design tokens (CSS variables, light/dark/contrast)
+- [x] React Query + Axios client z JWT interceptorem + auto-refresh
+- [x] Zustand stores: auth (persist) + theme (light/dark/contrast, prefers-color-scheme)
+- [x] React Router v6 + protected routes + Layout route
 - [x] TypeScript types dla wszystkich encji
-- [x] API klienty: auth, photos, hierarchy
-- [x] Strony: Home, Explore, Search, PhotoDetail
-- [x] Auth pages: Login (Zod walidacja), Register
-- [x] Creator pages: Dashboard, Upload, MyCollection
-- [x] Admin pages: Dashboard, Moderation
-- [x] Dockerfile + nginx (SPA routing)
+- [x] API klienty: auth, photos, hierarchy, tags
+- [x] React Query hooks: usePhotos, useHierarchy
+- [x] Komponenty UI: ThemeToggle, Skeleton, PhotoCard, PhotoGrid
+- [x] Komponenty layout: TopAppBar, BottomNav, PageLayout
+- [x] Komponenty hierarchii: HierarchyTree (expandable, klawiatura), HierarchyBreadcrumb
+- [x] Komponent mapy: ArchiveMap (react-leaflet, markery, popupy z miniaturą)
+- [x] Strony publiczne: HomePage (hero + szukaj + siatka), ExplorePage (drzewo + grid), SearchPage (filtry + paginacja), PhotoDetailPage (metadane + powiązane)
+- [x] Strony mapy: MapPage (pełnoekranowa mapa + filtry URL), TimelinePage (dekady, drag-to-scroll)
+- [x] Auth pages: LoginPage (Zod walidacja), RegisterPage
+- [x] Creator pages: DashboardPage, UploadPage, MyCollectionPage (szkielety)
+- [x] Admin pages: AdminDashboardPage, ModerationPage (szkielety)
+- [x] Dockerfile + nginx (SPA routing, cache, security headers)
 
 ### Infrastruktura ✅
 - [x] docker-compose.yml (prod: backend + frontend + db + minio)
 - [x] docker-compose.dev.yml (dev: tylko db + minio)
-- [x] nginx.conf (SPA, cache, security headers)
+- [x] nginx.conf (SPA, gzip, cache, security headers)
 
 ## Co jest do zrobienia (kolejne etapy)
 
-- [x] Backend: HierarchyController + HierarchyService (drzewo, breadcrumbs, CRUD + auto-slug)
-- [x] Backend: PhotoService + PhotoController (CRUD, FTS search, upload, moderacja)
-- [x] Backend: AuditService (zapis zdarzeń w REQUIRES_NEW)
-- [x] Backend: TagService + TagController (lista, autocomplete, CRUD Admin)
-- [x] Backend: StorageService interface + StubStorageService (dev) + S3StorageService (prod, MinIO)
-- [x] Backend: ImageProcessingService — miniatury 400px + medium 1200px (async, Thumbnailator)
-- [x] Backend: AdminController — audit log (z filtrami), statystyki systemu
-- [x] Backend: UserService + UserController — lista, block/unblock, zmiana roli, usuwanie
 - [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
-- [ ] Frontend: TopAppBar + SideNav + BottomNav
-- [ ] Frontend: PhotoGrid + PhotoCard + PhotoUploadForm
-- [ ] Frontend: HierarchyTree + HierarchyBreadcrumb
-- [ ] Frontend: SearchBar + SearchFilters + TagCloud
-- [ ] Frontend: ArchiveMap (Leaflet + klasteryzacja)
-- [ ] Frontend: Timeline (oś czasu)
+- [ ] Frontend: UploadPage — dropzone z postępem + pełny formularz metadanych
+- [ ] Frontend: MyCollectionPage — siatka z filtrami statusu
+- [ ] Frontend: EditPhotoPage — edycja metadanych + usuwanie
+- [ ] Frontend: HierarchyPicker — select drzewkowy w formularzu uploadu
+- [ ] Frontend: AdminDashboardPage — statystyki (StatsGrid)
+- [ ] Frontend: ModerationPage — tabela kolejki + approve/reject/correction
+- [ ] Frontend: UserManagementPage — tabela użytkowników + blokowanie
+- [ ] Frontend: AuditLogPage — log zdarzeń z filtrami
 - [ ] Frontend: Pełna dostępność WCAG 2.1 AA
+- [ ] Frontend: Testy (Vitest + Testing Library + Playwright)
+- [ ] DevOps: GitHub Actions CI/CD pipeline
 
 ---
 

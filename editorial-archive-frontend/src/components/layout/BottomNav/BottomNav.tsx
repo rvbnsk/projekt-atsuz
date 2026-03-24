@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Compass, Search, Upload, LayoutDashboard, Shield } from 'lucide-react'
+import { Home, Compass, Search, Map, Upload, LayoutDashboard, Shield } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/utils/cn'
 
@@ -56,6 +56,20 @@ export default function BottomNav() {
       >
         <Search size={20} />
         <span>Szukaj</span>
+      </NavLink>
+
+      <NavLink
+        to="/map"
+        aria-label="Mapa"
+        className={({ isActive }) =>
+          cn('flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs transition-colors', isActive && 'font-semibold')
+        }
+        style={({ isActive }) => ({
+          color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
+        })}
+      >
+        <Map size={20} />
+        <span>Mapa</span>
       </NavLink>
 
       {isAuthenticated && user ? (
