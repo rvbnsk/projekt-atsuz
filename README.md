@@ -234,7 +234,7 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Strony publiczne: HomePage (hero + szukaj + siatka), ExplorePage (drzewo + grid), SearchPage (filtry + paginacja), PhotoDetailPage (metadane + powiązane)
 - [x] Strony mapy: MapPage (pełnoekranowa mapa + filtry URL), TimelinePage (dekady, drag-to-scroll)
 - [x] Auth pages: LoginPage (Zod walidacja), RegisterPage
-- [x] Creator pages: DashboardPage, UploadPage, MyCollectionPage (szkielety)
+- [x] Creator pages: DashboardPage (statystyki + ostatnie przesłane), UploadPage (dropzone + formularz), MyCollectionPage (filtry statusu + siatka), EditPhotoPage (edycja + usuwanie)
 - [x] Admin pages: AdminDashboardPage, ModerationPage (szkielety)
 - [x] Dockerfile + nginx (SPA routing, cache, security headers)
 
@@ -247,11 +247,7 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 
 - [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
-- [ ] Frontend: UploadPage — dropzone z postępem + pełny formularz metadanych
-- [ ] Frontend: MyCollectionPage — siatka z filtrami statusu
-- [ ] Frontend: EditPhotoPage — edycja metadanych + usuwanie
-- [ ] Frontend: HierarchyPicker — select drzewkowy w formularzu uploadu
-- [ ] Frontend: AdminDashboardPage — statystyki (StatsGrid)
+- [ ] Frontend: AdminDashboardPage — statystyki (StatsGrid z /admin/stats)
 - [ ] Frontend: ModerationPage — tabela kolejki + approve/reject/correction
 - [ ] Frontend: UserManagementPage — tabela użytkowników + blokowanie
 - [ ] Frontend: AuditLogPage — log zdarzeń z filtrami

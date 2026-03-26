@@ -1,12 +1,13 @@
-import { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { useNavigate } from 'react-router-dom'
-import { Upload, X, Image } from 'lucide-react'
-import { photosApi } from '@/api/photos.api'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { Trash2, ArrowLeft } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { useHierarchyTree } from '@/hooks/useHierarchy'
+import { photosApi } from '@/api/photos.api'
+import Skeleton from '@/components/ui/Skeleton/Skeleton'
 import type { HierarchyNode } from '@/types/hierarchy.types'
+import type { Photo } from '@/types/photo.types'
 
-/** Flatten hierarchy tree into a list with indentation level */
 function flattenNodes(
   nodes: HierarchyNode[],
   depth = 0,
@@ -19,53 +20,52 @@ function flattenNodes(
   return result
 }
 
-export default function UploadPage() {
+export default function EditPhotoPage() {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { data: photo, isLoading } = useQuery<Photo | null>({
+    queryKey: ['my-photo-edit', id],
+    queryFn: async () => {
+      try {
+        return await photosApi.getById(id!)
+      } catch {
+        // Photo may be PENDING/REJECTED — fetch from my photos list
+        const list = await photosApi.myPhotos({ size: 200 })
+        return list.data.find((p) => p.id === id) ?? null
+      }
+    },
+    enabled: !!id,
+  })
   const { data: hierarchyTree } = useHierarchyTree()
   const flatNodes = hierarchyTree ? flattenNodes(hierarchyTree) : []
 
-  const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [photoDateLabel, setPhotoDateLabel] = useState('')
   const [locationName, setLocationName] = useState('')
   const [nodeId, setNodeId] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const onDrop = useCallback((accepted: File[]) => {
-    if (!accepted[0]) return
-    setFile(accepted[0])
-    setPreview(URL.createObjectURL(accepted[0]))
-    setError(null)
-  }, [])
+  // Populate form once photo loads
+  useEffect(() => {
+    if (!photo) return
+    setTitle(photo.title)
+    setDescription(photo.description ?? '')
+    setPhotoDateLabel(photo.photoDateLabel ?? '')
+    setLocationName(photo.locationName ?? '')
+    setNodeId(photo.hierarchyNodeId ?? '')
+  }, [photo])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { 'image/jpeg': [], 'image/png': [], 'image/webp': [], 'image/tiff': [] },
-    maxSize: 50 * 1024 * 1024,
-    multiple: false,
-    onDropRejected: (rejections) => {
-      const err = rejections[0]?.errors[0]
-      setError(err?.code === 'file-too-large' ? 'Plik jest zbyt duży (max 50 MB).' : 'Nieobsługiwany format pliku.')
-    },
-  })
-
-  const removeFile = () => {
-    setFile(null)
-    setPreview(null)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!file) { setError('Wybierz plik zdjęcia.'); return }
     if (!title.trim()) { setError('Tytuł jest wymagany.'); return }
-
-    setIsSubmitting(true)
+    setIsSaving(true)
     setError(null)
     try {
-      await photosApi.upload(file, {
+      await photosApi.update(id!, {
         title: title.trim(),
         description: description.trim() || undefined,
         photoDateLabel: photoDateLabel.trim() || undefined,
@@ -74,91 +74,93 @@ export default function UploadPage() {
       })
       navigate('/my-collection')
     } catch {
-      setError('Wystąpił błąd podczas przesyłania. Spróbuj ponownie.')
+      setError('Nie udało się zapisać zmian. Spróbuj ponownie.')
     } finally {
-      setIsSubmitting(false)
+      setIsSaving(false)
     }
+  }
+
+  const handleDelete = async () => {
+    if (!confirmDelete) { setConfirmDelete(true); return }
+    setIsDeleting(true)
+    try {
+      await photosApi.delete(id!)
+      navigate('/my-collection')
+    } catch {
+      setError('Nie udało się usunąć zdjęcia.')
+      setIsDeleting(false)
+      setConfirmDelete(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-4">
+        <Skeleton className="h-6 w-40" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    )
+  }
+
+  if (!photo) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <p className="text-sm mb-4" style={{ color: 'var(--color-on-surface-variant)' }}>
+          Nie znaleziono zdjęcia.
+        </p>
+        <Link to="/my-collection" className="text-sm underline" style={{ color: 'var(--color-primary)' }}>
+          Wróć do kolekcji
+        </Link>
+      </div>
+    )
   }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1
-        className="text-2xl font-headline mb-6"
-        style={{ fontFamily: 'var(--font-headline)', color: 'var(--color-on-surface)' }}
+      <Link
+        to="/my-collection"
+        className="inline-flex items-center gap-1.5 text-sm mb-5 hover:underline"
+        style={{ color: 'var(--color-on-surface-variant)' }}
       >
-        Prześlij zdjęcie
-      </h1>
+        <ArrowLeft size={14} aria-hidden="true" />
+        Moja kolekcja
+      </Link>
 
-      <form onSubmit={handleSubmit} noValidate>
-        {/* Dropzone */}
-        {!file ? (
-          <div
-            {...getRootProps()}
-            className="border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors mb-5"
-            style={{
-              borderColor: isDragActive ? 'var(--color-primary)' : 'var(--color-outline)',
-              background: isDragActive ? 'var(--color-primary-fixed)' : 'var(--color-surface)',
-            }}
-          >
-            <input {...getInputProps()} aria-label="Wybierz plik zdjęcia" />
-            <Image size={36} style={{ color: 'var(--color-on-surface-variant)' }} aria-hidden="true" />
-            <p className="text-sm font-medium" style={{ color: 'var(--color-on-surface)' }}>
-              {isDragActive ? 'Upuść zdjęcie tutaj' : 'Przeciągnij zdjęcie lub kliknij, aby wybrać'}
-            </p>
-            <p className="text-xs" style={{ color: 'var(--color-on-surface-variant)' }}>
-              JPG, PNG, WebP, TIFF · max 50 MB
-            </p>
-          </div>
-        ) : (
-          <div
-            className="relative rounded-xl overflow-hidden mb-5"
-            style={{ background: 'var(--color-surface)', boxShadow: 'var(--shadow-card)' }}
-          >
-            {preview && (
-              <img
-                src={preview}
-                alt="Podgląd"
-                className="w-full max-h-56 object-contain"
-              />
-            )}
-            <div
-              className="flex items-center justify-between px-3 py-2"
-              style={{ borderTop: '1px solid var(--color-surface-variant)' }}
-            >
-              <span className="text-sm truncate" style={{ color: 'var(--color-on-surface-variant)' }}>
-                {file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)
-              </span>
-              <button
-                type="button"
-                onClick={removeFile}
-                aria-label="Usuń wybrany plik"
-                className="ml-2 p-1 rounded-full hover:bg-[var(--color-surface-variant)]"
-                style={{ color: 'var(--color-on-surface-variant)' }}
-              >
-                <X size={14} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+      <div className="flex items-start justify-between mb-6">
+        <h1
+          className="text-2xl font-headline"
+          style={{ fontFamily: 'var(--font-headline)', color: 'var(--color-on-surface)' }}
+        >
+          Edytuj zdjęcie
+        </h1>
+        {photo.thumbnailUrl && (
+          <img
+            src={photo.thumbnailUrl}
+            alt={photo.title}
+            className="w-20 h-16 rounded-lg object-cover"
+          />
         )}
+      </div>
 
-        {/* Form fields */}
+      <form onSubmit={handleSave} noValidate>
         <div className="flex flex-col gap-4">
           <div>
             <label
-              htmlFor="title"
+              htmlFor="edit-title"
               className="block text-sm font-medium mb-1"
               style={{ color: 'var(--color-on-surface)' }}
             >
               Tytuł <span aria-hidden="true" style={{ color: 'var(--color-error)' }}>*</span>
             </label>
             <input
-              id="title"
+              id="edit-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              placeholder="np. Rynek Starego Miasta, Warszawa"
-              className="w-full px-3 py-2 rounded-lg text-sm outline-none border focus:ring-2"
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
               style={{
                 background: 'var(--color-surface)',
                 borderColor: 'var(--color-outline)',
@@ -169,18 +171,17 @@ export default function UploadPage() {
 
           <div>
             <label
-              htmlFor="description"
+              htmlFor="edit-description"
               className="block text-sm font-medium mb-1"
               style={{ color: 'var(--color-on-surface)' }}
             >
               Opis
             </label>
             <textarea
-              id="description"
+              id="edit-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              placeholder="Krótki opis zdjęcia…"
               className="w-full px-3 py-2 rounded-lg text-sm outline-none border resize-none"
               style={{
                 background: 'var(--color-surface)',
@@ -193,18 +194,18 @@ export default function UploadPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label
-                htmlFor="date-label"
+                htmlFor="edit-date"
                 className="block text-sm font-medium mb-1"
                 style={{ color: 'var(--color-on-surface)' }}
               >
                 Data (etykieta)
               </label>
               <input
-                id="date-label"
+                id="edit-date"
                 type="text"
                 value={photoDateLabel}
                 onChange={(e) => setPhotoDateLabel(e.target.value)}
-                placeholder="np. ok. 1954, lata 60."
+                placeholder="np. ok. 1954"
                 className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
                 style={{
                   background: 'var(--color-surface)',
@@ -216,18 +217,17 @@ export default function UploadPage() {
 
             <div>
               <label
-                htmlFor="location-name"
+                htmlFor="edit-location"
                 className="block text-sm font-medium mb-1"
                 style={{ color: 'var(--color-on-surface)' }}
               >
                 Lokalizacja
               </label>
               <input
-                id="location-name"
+                id="edit-location"
                 type="text"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
-                placeholder="np. ul. Krakowskie Przedmieście"
                 className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
                 style={{
                   background: 'var(--color-surface)',
@@ -241,14 +241,14 @@ export default function UploadPage() {
           {flatNodes.length > 0 && (
             <div>
               <label
-                htmlFor="node-id"
+                htmlFor="edit-node"
                 className="block text-sm font-medium mb-1"
                 style={{ color: 'var(--color-on-surface)' }}
               >
                 Obszar w hierarchii
               </label>
               <select
-                id="node-id"
+                id="edit-node"
                 value={nodeId}
                 onChange={(e) => setNodeId(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
@@ -278,23 +278,38 @@ export default function UploadPage() {
             </p>
           )}
 
-          <div className="flex gap-3 pt-1">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50 transition-opacity"
-              style={{ background: 'var(--color-primary)', color: 'var(--color-on-primary)' }}
-            >
-              <Upload size={14} aria-hidden="true" />
-              {isSubmitting ? 'Przesyłanie…' : 'Prześlij zdjęcie'}
-            </button>
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50"
+                style={{ background: 'var(--color-primary)', color: 'var(--color-on-primary)' }}
+              >
+                {isSaving ? 'Zapisywanie…' : 'Zapisz zmiany'}
+              </button>
+              <Link
+                to="/my-collection"
+                className="px-5 py-2.5 rounded-full text-sm font-medium border"
+                style={{ borderColor: 'var(--color-outline)', color: 'var(--color-on-surface)' }}
+              >
+                Anuluj
+              </Link>
+            </div>
+
             <button
               type="button"
-              onClick={() => navigate('/dashboard')}
-              className="px-5 py-2.5 rounded-full text-sm font-medium border"
-              style={{ borderColor: 'var(--color-outline)', color: 'var(--color-on-surface)' }}
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm disabled:opacity-50"
+              style={{
+                background: confirmDelete ? 'var(--color-error)' : 'transparent',
+                color: confirmDelete ? '#fff' : 'var(--color-error)',
+                border: `1px solid var(--color-error)`,
+              }}
             >
-              Anuluj
+              <Trash2 size={14} aria-hidden="true" />
+              {isDeleting ? 'Usuwanie…' : confirmDelete ? 'Potwierdź usunięcie' : 'Usuń'}
             </button>
           </div>
         </div>

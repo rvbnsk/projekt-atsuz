@@ -13,6 +13,7 @@ const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
 const DashboardPage = lazy(() => import('@/pages/creator/DashboardPage'))
 const UploadPage = lazy(() => import('@/pages/creator/UploadPage'))
 const MyCollectionPage = lazy(() => import('@/pages/creator/MyCollectionPage'))
+const EditPhotoPage = lazy(() => import('@/pages/creator/EditPhotoPage'))
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'))
 const ModerationPage = lazy(() => import('@/pages/admin/ModerationPage'))
 const MapPage = lazy(() => import('@/pages/MapPage'))
@@ -108,6 +109,14 @@ export default function App() {
             element={
               <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
                 <MyCollectionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-collection/:id/edit"
+            element={
+              <ProtectedRoute roles={['CREATOR', 'ADMIN']}>
+                <EditPhotoPage />
               </ProtectedRoute>
             }
           />
