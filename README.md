@@ -152,6 +152,10 @@ projekt-atsuz/
 | Tagi | GET | `/api/v1/tags` | Public |
 | Admin | GET | `/api/v1/admin/audit` | ADMIN |
 | Admin | GET | `/api/v1/admin/stats` | ADMIN |
+| Użytkownicy | GET | `/api/v1/users` | ADMIN |
+| Użytkownicy | PATCH | `/api/v1/users/{id}/block` | ADMIN |
+| Użytkownicy | PATCH | `/api/v1/users/{id}/role` | ADMIN |
+| Użytkownicy | DELETE | `/api/v1/users/{id}` | ADMIN |
 
 Pełna dokumentacja: http://localhost:8080/swagger-ui.html
 
@@ -235,7 +239,7 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Strony mapy: MapPage (pełnoekranowa mapa + filtry URL), TimelinePage (dekady, drag-to-scroll)
 - [x] Auth pages: LoginPage (Zod walidacja), RegisterPage
 - [x] Creator pages: DashboardPage (statystyki + ostatnie przesłane), UploadPage (dropzone + formularz), MyCollectionPage (filtry statusu + siatka), EditPhotoPage (edycja + usuwanie)
-- [x] Admin pages: AdminDashboardPage, ModerationPage (szkielety)
+- [x] Admin pages: AdminDashboardPage (stats), ModerationPage (approve/reject queue), UserManagementPage (block/role), AuditLogPage (event log)
 - [x] Dockerfile + nginx (SPA routing, cache, security headers)
 
 ### Infrastruktura ✅
@@ -247,10 +251,6 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 
 - [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
-- [ ] Frontend: AdminDashboardPage — statystyki (StatsGrid z /admin/stats)
-- [ ] Frontend: ModerationPage — tabela kolejki + approve/reject/correction
-- [ ] Frontend: UserManagementPage — tabela użytkowników + blokowanie
-- [ ] Frontend: AuditLogPage — log zdarzeń z filtrami
 - [ ] Frontend: Pełna dostępność WCAG 2.1 AA
 - [ ] Frontend: Testy (Vitest + Testing Library + Playwright)
 - [ ] DevOps: GitHub Actions CI/CD pipeline

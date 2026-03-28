@@ -30,3 +30,25 @@ export interface PageParams {
   sort?: string
   direction?: SortDirection
 }
+
+/** Spring Data Page<T> JSON format returned by backend */
+export interface SpringPage<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  number: number  // current page (0-indexed)
+  size: number
+}
+
+export function fromSpringPage<T>(page: SpringPage<T>): PagedResponse<T> {
+  return {
+    data: page.content,
+    pagination: {
+      page: page.number,
+      size: page.size,
+      totalElements: page.totalElements,
+      totalPages: page.totalPages,
+    },
+    timestamp: new Date().toISOString(),
+  }
+}

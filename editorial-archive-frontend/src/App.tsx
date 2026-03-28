@@ -16,6 +16,8 @@ const MyCollectionPage = lazy(() => import('@/pages/creator/MyCollectionPage'))
 const EditPhotoPage = lazy(() => import('@/pages/creator/EditPhotoPage'))
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'))
 const ModerationPage = lazy(() => import('@/pages/admin/ModerationPage'))
+const UserManagementPage = lazy(() => import('@/pages/admin/UserManagementPage'))
+const AuditLogPage = lazy(() => import('@/pages/admin/AuditLogPage'))
 const MapPage = lazy(() => import('@/pages/MapPage'))
 const TimelinePage = lazy(() => import('@/pages/TimelinePage'))
 
@@ -135,6 +137,22 @@ export default function App() {
             element={
               <ProtectedRoute roles={['ADMIN']}>
                 <ModerationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute roles={['ADMIN']}>
+                <UserManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/audit"
+            element={
+              <ProtectedRoute roles={['ADMIN']}>
+                <AuditLogPage />
               </ProtectedRoute>
             }
           />
