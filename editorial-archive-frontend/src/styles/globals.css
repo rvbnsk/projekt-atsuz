@@ -67,15 +67,20 @@
 /* ── High Contrast Mode (WCAG 2.1 AA+) ── */
 .contrast {
   --color-primary:             #000000;
+  --color-primary-container:   #000000;
+  --color-primary-fixed:       #e0e0e0;
   --color-on-primary:          #ffffff;
+  --color-secondary:           #000000;
+  --color-secondary-container: #e0e0e0;
+  --color-tertiary:            #000000;
+  --color-error:               #8b0000;
+  --color-error-container:     #ffd6d6;
   --color-background:          #ffffff;
   --color-surface:             #ffffff;
   --color-surface-variant:     #f0f0f0;
   --color-on-surface:          #000000;
   --color-on-surface-variant:  #000000;
   --color-outline:             #000000;
-  --color-error:               #8b0000;
-  --color-secondary:           #000000;
 }
 
 /* ── Base styles ── */
@@ -109,6 +114,15 @@ h1, h2, h3, h4, h5, h6 {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* Ensure focus ring on inputs even when outline-none class is applied */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* ── Skip link (accessibility) ── */

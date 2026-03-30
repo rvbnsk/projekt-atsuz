@@ -90,6 +90,7 @@ export default function SearchPage() {
             type="button"
             aria-label="Filtry"
             aria-expanded={filtersOpen}
+            aria-controls="search-filters"
             onClick={() => setFiltersOpen((v) => !v)}
             className="px-3 py-3 transition-colors hover:bg-[var(--color-surface-variant)]"
             style={{ color: 'var(--color-on-surface-variant)' }}
@@ -98,17 +99,19 @@ export default function SearchPage() {
           </button>
           <button
             type="submit"
+            aria-label="Szukaj"
             className="px-5 py-3 shrink-0 flex items-center gap-2 text-sm font-medium"
             style={{ background: 'var(--color-primary)', color: 'var(--color-on-primary)' }}
           >
             <Search size={16} aria-hidden="true" />
-            <span className="hidden sm:inline">Szukaj</span>
+            <span className="hidden sm:inline" aria-hidden="true">Szukaj</span>
           </button>
         </div>
 
         {/* Expandable filters */}
         {filtersOpen && (
           <div
+            id="search-filters"
             className="rounded-xl p-4 mb-3 flex flex-wrap gap-4"
             style={{
               background: 'var(--color-surface)',
@@ -213,11 +216,12 @@ export default function SearchPage() {
         <div className="mt-8 flex items-center justify-center gap-2" role="navigation" aria-label="Paginacja">
           <button
             disabled={activeParams.page === 0}
+            aria-label="Poprzednia strona"
             onClick={() => setActiveParams((p) => ({ ...p, page: (p.page ?? 1) - 1 }))}
             className="px-4 py-2 rounded-full text-sm font-medium disabled:opacity-40 transition-colors hover:bg-[var(--color-surface-variant)]"
             style={{ color: 'var(--color-on-surface)' }}
           >
-            ← Poprzednia
+            <span aria-hidden="true">←</span> Poprzednia
           </button>
           <span
             className="text-sm px-3"
@@ -227,11 +231,12 @@ export default function SearchPage() {
           </span>
           <button
             disabled={(activeParams.page ?? 0) + 1 >= data.pagination.totalPages}
+            aria-label="Następna strona"
             onClick={() => setActiveParams((p) => ({ ...p, page: (p.page ?? 0) + 1 }))}
             className="px-4 py-2 rounded-full text-sm font-medium disabled:opacity-40 transition-colors hover:bg-[var(--color-surface-variant)]"
             style={{ color: 'var(--color-on-surface)' }}
           >
-            Następna →
+            Następna <span aria-hidden="true">→</span>
           </button>
         </div>
       )}

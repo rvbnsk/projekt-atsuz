@@ -26,7 +26,7 @@ export default function BottomNav() {
           color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
         })}
       >
-        <Home size={20} />
+        <Home size={20} aria-hidden="true" />
         <span>Główna</span>
       </NavLink>
 
@@ -40,7 +40,7 @@ export default function BottomNav() {
           color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
         })}
       >
-        <Compass size={20} />
+        <Compass size={20} aria-hidden="true" />
         <span>Przeglądaj</span>
       </NavLink>
 
@@ -54,7 +54,7 @@ export default function BottomNav() {
           color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
         })}
       >
-        <Search size={20} />
+        <Search size={20} aria-hidden="true" />
         <span>Szukaj</span>
       </NavLink>
 
@@ -68,7 +68,7 @@ export default function BottomNav() {
           color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
         })}
       >
-        <Map size={20} />
+        <Map size={20} aria-hidden="true" />
         <span>Mapa</span>
       </NavLink>
 
@@ -85,13 +85,13 @@ export default function BottomNav() {
                 color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
               })}
             >
-              <Upload size={20} />
+              <Upload size={20} aria-hidden="true" />
               <span>Prześlij</span>
             </NavLink>
           )}
           <NavLink
             to={user.role === 'ADMIN' ? '/admin' : '/dashboard'}
-            aria-label={user.role === 'ADMIN' ? 'Admin' : 'Dashboard'}
+            aria-label={user.role === 'ADMIN' ? 'Admin' : 'Panel'}
             className={({ isActive }) =>
               cn('flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs transition-colors', isActive && 'font-semibold')
             }
@@ -99,7 +99,7 @@ export default function BottomNav() {
               color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
             })}
           >
-            {user.role === 'ADMIN' ? <Shield size={20} /> : <LayoutDashboard size={20} />}
+            {user.role === 'ADMIN' ? <Shield size={20} aria-hidden="true" /> : <LayoutDashboard size={20} aria-hidden="true" />}
             <span>{user.role === 'ADMIN' ? 'Admin' : 'Panel'}</span>
           </NavLink>
         </>

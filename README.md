@@ -242,6 +242,8 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Admin pages: AdminDashboardPage (stats), ModerationPage (approve/reject queue), UserManagementPage (block/role), AuditLogPage (event log)
 - [x] Dockerfile + nginx (SPA routing, cache, security headers)
 
+- [x] Dostępność WCAG 2.1 AA: poprawki focus-visible, aria-describedby, aria-busy, aria-controls, required, kontrast tokenów CSS
+
 ### Infrastruktura ✅
 - [x] docker-compose.yml (prod: backend + frontend + db + minio)
 - [x] docker-compose.dev.yml (dev: tylko db + minio)
@@ -251,7 +253,6 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 
 - [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
-- [ ] Frontend: Pełna dostępność WCAG 2.1 AA
 - [ ] Frontend: Testy (Vitest + Testing Library + Playwright)
 - [ ] DevOps: GitHub Actions CI/CD pipeline
 

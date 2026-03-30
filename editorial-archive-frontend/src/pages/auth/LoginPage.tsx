@@ -86,6 +86,7 @@ export default function LoginPage() {
               id="email"
               type="email"
               autoComplete="email"
+              required
               {...register('email')}
               className="w-full px-3 py-2 rounded-md border text-sm"
               style={{
@@ -115,6 +116,7 @@ export default function LoginPage() {
               id="password"
               type="password"
               autoComplete="current-password"
+              required
               {...register('password')}
               className="w-full px-3 py-2 rounded-md border text-sm"
               style={{
@@ -139,10 +141,11 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
+            aria-busy={isSubmitting}
             className="w-full py-3 rounded-full font-medium transition-opacity disabled:opacity-60"
             style={{ background: 'var(--color-primary)', color: 'var(--color-on-primary)' }}
           >
-            {isSubmitting ? 'Logowanie...' : 'Zaloguj się'}
+            {isSubmitting ? 'Logowanie…' : 'Zaloguj się'}
           </button>
         </form>
       </div>

@@ -81,6 +81,7 @@ export default function RegisterPage() {
             { id: 'password', label: 'Hasło', type: 'password', autocomplete: 'new-password' },
           ].map(({ id, label, type, autocomplete }) => {
             const field = id as keyof RegisterFormData
+            const errorId = `${field}-error`
             return (
               <div key={id} className="mb-4">
                 <label
@@ -88,12 +89,14 @@ export default function RegisterPage() {
                   className="block text-sm font-medium mb-1"
                   style={{ color: 'var(--color-on-surface)' }}
                 >
-                  {label}
+                  {label}{' '}
+                  <span aria-hidden="true" style={{ color: 'var(--color-error)' }}>*</span>
                 </label>
                 <input
                   id={id}
                   type={type}
                   autoComplete={autocomplete}
+                  required
                   {...register(field)}
                   className="w-full px-3 py-2 rounded-md border text-sm"
                   style={{
@@ -104,9 +107,10 @@ export default function RegisterPage() {
                     color: 'var(--color-on-surface)',
                   }}
                   aria-invalid={!!errors[field]}
+                  aria-describedby={errors[field] ? errorId : undefined}
                 />
                 {errors[field] && (
-                  <p className="mt-1 text-xs" style={{ color: 'var(--color-error)' }}>
+                  <p id={errorId} className="mt-1 text-xs" style={{ color: 'var(--color-error)' }}>
                     {errors[field]?.message}
                   </p>
                 )}
@@ -117,10 +121,11 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isSubmitting}
+            aria-busy={isSubmitting}
             className="mt-2 w-full py-3 rounded-full font-medium transition-opacity disabled:opacity-60"
             style={{ background: 'var(--color-primary)', color: 'var(--color-on-primary)' }}
           >
-            {isSubmitting ? 'Tworzenie konta...' : 'Utwórz konto'}
+            {isSubmitting ? 'Tworzenie konta…' : 'Utwórz konto'}
           </button>
         </form>
       </div>
