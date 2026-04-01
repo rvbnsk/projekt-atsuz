@@ -104,6 +104,11 @@ public class AuthService {
         refreshTokenRepository.deleteByUserId(userId);
     }
 
+    /** Used by OAuth2SuccessHandler to issue tokens for an already-authenticated user. */
+    public AuthDtos.AuthResponse issueTokensForUser(User user) {
+        return buildAuthResponse(user);
+    }
+
     private AuthDtos.AuthResponse buildAuthResponse(User user) {
         String accessToken = jwtTokenProvider.generateToken(
             user.getId(), user.getEmail(), user.getRole().name()

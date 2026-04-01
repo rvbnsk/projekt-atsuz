@@ -152,6 +152,8 @@ projekt-atsuz/
 | Tagi | GET | `/api/v1/tags` | Public |
 | Admin | GET | `/api/v1/admin/audit` | ADMIN |
 | Admin | GET | `/api/v1/admin/stats` | ADMIN |
+| Auth | GET | `/oauth2/authorization/google` | Public |
+| Auth | GET | `/oauth2/authorization/facebook` | Public |
 | Użytkownicy | GET | `/api/v1/users` | ADMIN |
 | Użytkownicy | PATCH | `/api/v1/users/{id}/block` | ADMIN |
 | Użytkownicy | PATCH | `/api/v1/users/{id}/role` | ADMIN |
@@ -207,6 +209,7 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Migracje Flyway (tabele, indeksy, FTS, seed data)
 - [x] Encje JPA: User, Photo, HierarchyNode, Tag, AuditLog, RefreshToken
 - [x] JWT (access token 15 min + refresh token 7 dni z rotacją)
+- [x] OAuth2 (Google + Facebook) — upsert użytkownika, redirect z tokenami JWT
 - [x] Spring Security (CORS, stateless, ochrona endpointów)
 - [x] Auth: register, login, refresh, logout, me
 - [x] GlobalExceptionHandler + typy wyjątków
@@ -237,7 +240,8 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Komponent mapy: ArchiveMap (react-leaflet, markery, popupy z miniaturą)
 - [x] Strony publiczne: HomePage (hero + szukaj + siatka), ExplorePage (drzewo + grid), SearchPage (filtry + paginacja), PhotoDetailPage (metadane + powiązane)
 - [x] Strony mapy: MapPage (pełnoekranowa mapa + filtry URL), TimelinePage (dekady, drag-to-scroll)
-- [x] Auth pages: LoginPage (Zod walidacja), RegisterPage
+- [x] Auth pages: LoginPage (Zod walidacja + przyciski Google/Facebook OAuth2), RegisterPage
+- [x] OAuthCallbackPage — odbiera token z URL, zapisuje do store, przekierowuje
 - [x] Creator pages: DashboardPage (statystyki + ostatnie przesłane), UploadPage (dropzone + formularz), MyCollectionPage (filtry statusu + siatka), EditPhotoPage (edycja + usuwanie)
 - [x] Admin pages: AdminDashboardPage (stats), ModerationPage (approve/reject queue), UserManagementPage (block/role), AuditLogPage (event log)
 - [x] Dockerfile + nginx (SPA routing, cache, security headers)
@@ -251,7 +255,6 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 
 ## Co jest do zrobienia (kolejne etapy)
 
-- [ ] Backend: OAuth2 (Google + Facebook)
 - [ ] Backend: Testy jednostkowe i integracyjne
 - [ ] Frontend: Testy (Vitest + Testing Library + Playwright)
 - [ ] DevOps: GitHub Actions CI/CD pipeline

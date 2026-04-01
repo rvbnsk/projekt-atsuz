@@ -10,6 +10,7 @@ const SearchPage = lazy(() => import('@/pages/SearchPage'))
 const PhotoDetailPage = lazy(() => import('@/pages/PhotoDetailPage'))
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
+const OAuthCallbackPage = lazy(() => import('@/pages/auth/OAuthCallbackPage'))
 const DashboardPage = lazy(() => import('@/pages/creator/DashboardPage'))
 const UploadPage = lazy(() => import('@/pages/creator/UploadPage'))
 const MyCollectionPage = lazy(() => import('@/pages/creator/MyCollectionPage'))
@@ -88,6 +89,7 @@ export default function App() {
           {/* Auth */}
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path="/auth/callback" element={<OAuthCallbackPage />} />
 
           {/* Creator */}
           <Route
