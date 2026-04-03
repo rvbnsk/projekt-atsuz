@@ -18,11 +18,11 @@ export function usePhotoList(params: PhotoSearchParams = {}) {
   })
 }
 
-export function usePhotoSearch(params: PhotoSearchParams) {
+export function usePhotoSearch(params: PhotoSearchParams | null) {
   return useQuery({
-    queryKey: photoKeys.search(params),
-    queryFn: () => photosApi.search(params),
-    enabled: Object.values(params).some((v) => v != null && v !== '' && v !== undefined),
+    queryKey: photoKeys.search(params ?? {}),
+    queryFn: () => photosApi.search(params!),
+    enabled: params != null && Object.values(params).some((v) => v != null && v !== '' && v !== undefined),
   })
 }
 

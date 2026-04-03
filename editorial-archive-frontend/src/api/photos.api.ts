@@ -51,9 +51,14 @@ export const photosApi = {
     await apiClient.delete(`/photos/${id}`)
   },
 
-  myPhotos: async (params?: { page?: number; size?: number }): Promise<PagedResponse<Photo>> => {
+  myPhotos: async (params?: { page?: number; size?: number; status?: string }): Promise<PagedResponse<Photo>> => {
     const response = await apiClient.get<SpringPage<Photo>>('/photos/my', { params })
     return fromSpringPage(response.data)
+  },
+
+  myPhotoById: async (id: string): Promise<Photo> => {
+    const response = await apiClient.get<Photo>(`/photos/my/${id}`)
+    return response.data
   },
 
   // Admin

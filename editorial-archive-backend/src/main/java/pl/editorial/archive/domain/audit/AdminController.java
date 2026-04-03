@@ -28,8 +28,8 @@ public class AdminController {
     public ResponseEntity<Page<AuditLog>> getAuditLog(
             @RequestParam(required = false) UUID actorId,
             @RequestParam(required = false) String action,
-            @RequestParam(required = false) Instant from,
-            @RequestParam(required = false) Instant to,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
 

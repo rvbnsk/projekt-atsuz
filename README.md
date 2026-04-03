@@ -210,39 +210,41 @@ Migracje Flyway: `V001` (tabele) → `V002` (indeksy + FTS trigger) → `V003` (
 - [x] Encje JPA: User, Photo, HierarchyNode, Tag, AuditLog, RefreshToken
 - [x] JWT (access token 15 min + refresh token 7 dni z rotacją)
 - [x] OAuth2 (Google + Facebook) — upsert użytkownika, redirect z tokenami JWT
-- [x] Spring Security (CORS, stateless, ochrona endpointów)
+- [x] Spring Security (CORS, stateless, ochrona endpointów; reguły w poprawnej kolejności)
 - [x] Auth: register, login, refresh, logout, me
 - [x] GlobalExceptionHandler + typy wyjątków
 - [x] OpenAPI/Swagger konfiguracja
 - [x] CleanupScheduler (wygasłe tokeny)
 - [x] Dockerfile (multi-stage, JRE 21)
 - [x] HierarchyService + HierarchyController (drzewo, breadcrumbs, CRUD)
-- [x] PhotoService + PhotoController (CRUD, FTS search, upload, moderacja)
+- [x] PhotoService + PhotoController (CRUD, FTS search, upload z walidacją, moderacja, tag filter)
+- [x] PhotoController: GET /photos/my/{id} — własne zdjęcie po ID (dowolny status)
+- [x] PhotoController: GET /photos/my?status= — filtr statusu server-side
 - [x] TagService + TagController (lista, autocomplete, CRUD admin)
 - [x] AuditService (zapis zdarzeń w REQUIRES_NEW)
-- [x] StorageService: StubStorageService (dev) + S3StorageService (prod, MinIO)
+- [x] StorageService: StubStorageService (dev, null URL) + S3StorageService (prod, MinIO)
 - [x] ImageProcessingService — miniatury 400px + medium 1200px (async, Thumbnailator)
-- [x] AdminController — audit log (z filtrami), statystyki systemu
-- [x] UserService + UserController — lista, block/unblock, zmiana roli
+- [x] AdminController — audit log (z filtrami @DateTimeFormat), statystyki systemu
+- [x] UserService + UserController — lista (cap 100), block/unblock, zmiana roli
 
 ### Frontend ✅
 - [x] Vite + React 18 + TypeScript
 - [x] Tailwind CSS + Design tokens (CSS variables, light/dark/contrast)
-- [x] React Query + Axios client z JWT interceptorem + auto-refresh
-- [x] Zustand stores: auth (persist) + theme (light/dark/contrast, prefers-color-scheme)
+- [x] React Query + Axios client z JWT interceptorem + auto-refresh (mutex zapobiega równoległym odświeżeniom)
+- [x] Zustand stores: auth (persist z accessToken) + theme (light/dark/contrast, prefers-color-scheme)
 - [x] React Router v6 + protected routes + Layout route
-- [x] TypeScript types dla wszystkich encji
+- [x] TypeScript types dla wszystkich encji (poprawne nullability, bez storageKey)
 - [x] API klienty: auth, photos, hierarchy, tags
-- [x] React Query hooks: usePhotos, useHierarchy
+- [x] React Query hooks: usePhotos (usePhotoSearch przyjmuje null), useHierarchy
 - [x] Komponenty UI: ThemeToggle, Skeleton, PhotoCard, PhotoGrid
 - [x] Komponenty layout: TopAppBar, BottomNav, PageLayout
 - [x] Komponenty hierarchii: HierarchyTree (expandable, klawiatura), HierarchyBreadcrumb
 - [x] Komponent mapy: ArchiveMap (react-leaflet, markery, popupy z miniaturą)
-- [x] Strony publiczne: HomePage (hero + szukaj + siatka), ExplorePage (drzewo + grid), SearchPage (filtry + paginacja), PhotoDetailPage (metadane + powiązane)
+- [x] Strony publiczne: HomePage (hero + szukaj + siatka), ExplorePage (drzewo + grid, root ładuje wszystkie), SearchPage (filtry + paginacja, dynamiczny rok max), PhotoDetailPage (metadane + powiązane, inwalidacja viewCount)
 - [x] Strony mapy: MapPage (pełnoekranowa mapa + filtry URL), TimelinePage (dekady, drag-to-scroll)
 - [x] Auth pages: LoginPage (Zod walidacja + przyciski Google/Facebook OAuth2), RegisterPage
 - [x] OAuthCallbackPage — odbiera token z URL, zapisuje do store, przekierowuje
-- [x] Creator pages: DashboardPage (statystyki + ostatnie przesłane), UploadPage (dropzone + formularz), MyCollectionPage (filtry statusu + siatka), EditPhotoPage (edycja + usuwanie)
+- [x] Creator pages: DashboardPage (dokładne liczniki per status), UploadPage (dropzone + pełny formularz z tagami/GPS/prawami), MyCollectionPage (filtr statusu server-side), EditPhotoPage (własne zdjęcie po ID, edycja tagów)
 - [x] Admin pages: AdminDashboardPage (stats), ModerationPage (approve/reject queue), UserManagementPage (block/role), AuditLogPage (event log)
 - [x] Dockerfile + nginx (SPA routing, cache, security headers)
 

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   Calendar,
   MapPin,
@@ -9,7 +10,7 @@ import {
   ExternalLink,
   ArrowLeft,
 } from 'lucide-react'
-import { usePhoto, useRelatedPhotos } from '@/hooks/usePhotos'
+import { usePhoto, useRelatedPhotos, photoKeys } from '@/hooks/usePhotos'
 import { useBreadcrumbs } from '@/hooks/useHierarchy'
 import { photosApi } from '@/api/photos.api'
 import HierarchyBreadcrumb from '@/components/hierarchy/HierarchyBreadcrumb/HierarchyBreadcrumb'
@@ -18,13 +19,16 @@ import Skeleton from '@/components/ui/Skeleton/Skeleton'
 
 export default function PhotoDetailPage() {
   const { id } = useParams<{ id: string }>()
+  const queryClient = useQueryClient()
   const { data: photo, isLoading } = usePhoto(id!)
   const { data: related } = useRelatedPhotos(id!)
   const { data: breadcrumbs } = useBreadcrumbs(photo?.hierarchyNodeId ?? undefined)
 
   useEffect(() => {
     if (id) {
-      photosApi.incrementView(id).catch(() => {/* ignore */})
+      photosApi.incrementView(id)
+        .then(() => queryClient.invalidateQueries({ queryKey: photoKeys.detail(id) }))
+        .catch(() => {/* ignore */})
     }
   }, [id])
 

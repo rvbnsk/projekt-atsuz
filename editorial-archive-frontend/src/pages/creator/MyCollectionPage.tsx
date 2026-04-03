@@ -20,13 +20,15 @@ export default function MyCollectionPage() {
   const [page, setPage] = useState(0)
 
   const { data, isLoading } = useQuery({
-    queryKey: ['my-photos', page],
-    queryFn: () => photosApi.myPhotos({ page, size: 20 }),
+    queryKey: ['my-photos', status, page],
+    queryFn: () => photosApi.myPhotos({
+      page,
+      size: 20,
+      status: status !== 'ALL' ? status : undefined,
+    }),
   })
 
-  const photos = (data?.data ?? []).filter(
-    (p) => status === 'ALL' || p.status === status,
-  )
+  const photos = data?.data ?? []
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">

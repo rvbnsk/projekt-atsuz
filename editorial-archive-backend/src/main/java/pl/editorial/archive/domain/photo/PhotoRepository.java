@@ -18,20 +18,39 @@ public interface PhotoRepository extends JpaRepository<Photo, UUID> {
 
     Page<Photo> findByUploaderIdOrderByCreatedAtDesc(UUID uploaderId, Pageable pageable);
 
+    Page<Photo> findByUploaderIdAndStatusOrderByCreatedAtDesc(UUID uploaderId, PhotoStatus status, Pageable pageable);
+
     @Query(value = """
         SELECT p.* FROM photos p
         WHERE p.status = 'APPROVED'
-        AND (:#{#nodeIds == null || #nodeIds.isEmpty() ? 'true' : 'false'} = 'true'
-             OR p.hierarchy_node_id = ANY(CAST(:nodeIdsStr AS uuid[])))
+        AND (:nodeIdsStr IS NULL OR p.hierarchy_node_id = ANY(CAST(:nodeIdsStr AS uuid[])))
         AND (:yearFrom IS NULL OR EXTRACT(YEAR FROM p.photo_date_from) >= :yearFrom)
         AND (:yearTo IS NULL OR EXTRACT(YEAR FROM p.photo_date_from) <= :yearTo)
+        AND (:tagsStr IS NULL OR EXISTS (
+            SELECT 1 FROM photo_tags pt
+            JOIN tags t ON t.id = pt.tag_id
+            WHERE pt.photo_id = p.id AND t.name = ANY(CAST(:tagsStr AS text[]))
+        ))
         ORDER BY p.created_at DESC
-        """, nativeQuery = true)
+        """,
+        countQuery = """
+        SELECT COUNT(*) FROM photos p
+        WHERE p.status = 'APPROVED'
+        AND (:nodeIdsStr IS NULL OR p.hierarchy_node_id = ANY(CAST(:nodeIdsStr AS uuid[])))
+        AND (:yearFrom IS NULL OR EXTRACT(YEAR FROM p.photo_date_from) >= :yearFrom)
+        AND (:yearTo IS NULL OR EXTRACT(YEAR FROM p.photo_date_from) <= :yearTo)
+        AND (:tagsStr IS NULL OR EXISTS (
+            SELECT 1 FROM photo_tags pt
+            JOIN tags t ON t.id = pt.tag_id
+            WHERE pt.photo_id = p.id AND t.name = ANY(CAST(:tagsStr AS text[]))
+        ))
+        """,
+        nativeQuery = true)
     Page<Photo> findApprovedWithFilters(
-        @Param("nodeIds") List<UUID> nodeIds,
         @Param("nodeIdsStr") String nodeIdsStr,
         @Param("yearFrom") Integer yearFrom,
         @Param("yearTo") Integer yearTo,
+        @Param("tagsStr") String tagsStr,
         Pageable pageable
     );
 
@@ -40,7 +59,13 @@ public interface PhotoRepository extends JpaRepository<Photo, UUID> {
         WHERE p.status = 'APPROVED'
         AND p.search_vector @@ plainto_tsquery('simple', :query)
         ORDER BY ts_rank(p.search_vector, plainto_tsquery('simple', :query)) DESC
-        """, nativeQuery = true)
+        """,
+        countQuery = """
+        SELECT COUNT(*) FROM photos p
+        WHERE p.status = 'APPROVED'
+        AND p.search_vector @@ plainto_tsquery('simple', :query)
+        """,
+        nativeQuery = true)
     Page<Photo> fullTextSearch(@Param("query") String query, Pageable pageable);
 
     @Query(value = """

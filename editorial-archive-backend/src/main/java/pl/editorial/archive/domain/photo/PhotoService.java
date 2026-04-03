@@ -54,11 +54,14 @@ public class PhotoService {
         String nodeIdsStr = nodeIds.isEmpty() ? null
                 : "{" + String.join(",", nodeIds.stream().map(UUID::toString).toList()) + "}";
 
+        String tagsStr = (params.tags() == null || params.tags().isEmpty()) ? null
+                : "{" + String.join(",", params.tags()) + "}";
+
         return photoRepository.findApprovedWithFilters(
-                nodeIds.isEmpty() ? null : nodeIds,
                 nodeIdsStr,
                 params.yearFrom(),
                 params.yearTo(),
+                tagsStr,
                 pageable
         ).map(this::toResponse);
     }
@@ -125,9 +128,21 @@ public class PhotoService {
         return toResponse(saved);
     }
 
-    public Page<PhotoDtos.PhotoResponse> getMyPhotos(UUID uploaderId, Pageable pageable) {
+    public Page<PhotoDtos.PhotoResponse> getMyPhotos(UUID uploaderId, PhotoStatus status, Pageable pageable) {
+        if (status != null) {
+            return photoRepository.findByUploaderIdAndStatusOrderByCreatedAtDesc(uploaderId, status, pageable)
+                    .map(this::toResponse);
+        }
         return photoRepository.findByUploaderIdOrderByCreatedAtDesc(uploaderId, pageable)
                 .map(this::toResponse);
+    }
+
+    public PhotoDtos.PhotoResponse getMyPhotoById(UUID id, UUID userId) {
+        Photo photo = findOrThrow(id);
+        if (!photo.getUploader().getId().equals(userId)) {
+            throw new ForbiddenException("PHOTO_NOT_OWNED", "Nie możesz przeglądać cudzych zdjęć");
+        }
+        return toResponse(photo);
     }
 
     @Transactional
@@ -138,7 +153,6 @@ public class PhotoService {
 
         photo.setTitle(request.title());
         photo.setDescription(request.description());
-        photo.setLicenseNotes(request.licenseNotes());
 
         applyMetadata(photo, request.nodeId(), request.tags(),
                 request.photoDateFrom(), request.photoDateTo(), request.photoDateLabel(),
@@ -223,7 +237,7 @@ public class PhotoService {
         photo.setLatitude(lat);
         photo.setLongitude(lng);
         if (rights != null) photo.setRightsStatement(rights);
-        if (licenseNotes != null) photo.setLicenseNotes(licenseNotes);
+        photo.setLicenseNotes(licenseNotes);
     }
 
     private List<UUID> resolveNodeIds(String nodeId) {

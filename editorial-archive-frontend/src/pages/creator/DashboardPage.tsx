@@ -11,17 +11,31 @@ export default function DashboardPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['my-photos-dashboard'],
-    queryFn: () => photosApi.myPhotos({ page: 0, size: 50 }),
+    queryFn: () => photosApi.myPhotos({ page: 0, size: 5 }),
   })
 
-  const photos = data?.data ?? []
+  const { data: pendingData } = useQuery({
+    queryKey: ['my-photos-count', 'PENDING'],
+    queryFn: () => photosApi.myPhotos({ page: 0, size: 1, status: 'PENDING' }),
+  })
+
+  const { data: approvedData } = useQuery({
+    queryKey: ['my-photos-count', 'APPROVED'],
+    queryFn: () => photosApi.myPhotos({ page: 0, size: 1, status: 'APPROVED' }),
+  })
+
+  const { data: rejectedData } = useQuery({
+    queryKey: ['my-photos-count', 'REJECTED'],
+    queryFn: () => photosApi.myPhotos({ page: 0, size: 1, status: 'REJECTED' }),
+  })
+
+  const recent = data?.data ?? []
   const counts = {
     total: data?.pagination.totalElements ?? 0,
-    pending: photos.filter((p) => p.status === 'PENDING').length,
-    approved: photos.filter((p) => p.status === 'APPROVED').length,
-    rejected: photos.filter((p) => p.status === 'REJECTED' || p.status === 'NEEDS_CORRECTION').length,
+    pending: pendingData?.pagination.totalElements ?? 0,
+    approved: approvedData?.pagination.totalElements ?? 0,
+    rejected: rejectedData?.pagination.totalElements ?? 0,
   }
-  const recent = photos.slice(0, 5)
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
@@ -126,7 +140,7 @@ export default function DashboardPage() {
         </section>
       )}
 
-      {!isLoading && photos.length === 0 && (
+      {!isLoading && counts.total === 0 && (
         <div className="py-12 text-center">
           <p className="text-sm mb-4" style={{ color: 'var(--color-on-surface-variant)' }}>
             Nie masz jeszcze żadnych przesłanych zdjęć.

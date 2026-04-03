@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useHierarchyTree, useBreadcrumbs } from '@/hooks/useHierarchy'
-import { usePhotoSearch } from '@/hooks/usePhotos'
+import { usePhotoList, usePhotoSearch } from '@/hooks/usePhotos'
 import HierarchyTree from '@/components/hierarchy/HierarchyTree/HierarchyTree'
 import HierarchyBreadcrumb from '@/components/hierarchy/HierarchyBreadcrumb/HierarchyBreadcrumb'
 import PhotoGrid from '@/components/photo/PhotoGrid/PhotoGrid'
@@ -16,9 +16,13 @@ export default function ExplorePage() {
 
   const { data: tree, isLoading: treeLoading } = useHierarchyTree()
   const { data: breadcrumbs } = useBreadcrumbs(nodeId)
-  const { data: photosData, isLoading: photosLoading } = usePhotoSearch(
-    nodeId ? { nodeId } : { yearFrom: undefined },
+  // When no nodeId: list all approved photos; when nodeId: search filtered by node
+  const { data: listData, isLoading: listLoading } = usePhotoList({ size: 24 })
+  const { data: searchData, isLoading: searchLoading } = usePhotoSearch(
+    nodeId ? { nodeId, size: 24 } : null,
   )
+  const photosData = nodeId ? searchData : listData
+  const photosLoading = nodeId ? searchLoading : listLoading
 
   const handleSelect = (node: HierarchyNode) => {
     navigate(`/explore/${node.id}`)

@@ -3,6 +3,9 @@ import { useAuthStore } from '@/store/authStore'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 
+// Mutex for refresh token requests — prevents multiple parallel refresh calls
+let refreshPromise: Promise<{ accessToken: string; refreshToken: string }> | null = null
+
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -36,11 +39,14 @@ apiClient.interceptors.response.use(
         const refreshToken = useAuthStore.getState().refreshToken
         if (!refreshToken) throw new Error('No refresh token')
 
-        const response = await axios.post(`${BASE_URL}/auth/refresh`, {
-          refreshToken,
-        })
+        if (!refreshPromise) {
+          refreshPromise = axios
+            .post(`${BASE_URL}/auth/refresh`, { refreshToken })
+            .then((r) => r.data)
+            .finally(() => { refreshPromise = null })
+        }
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data
+        const { accessToken, refreshToken: newRefreshToken } = await refreshPromise
         useAuthStore.getState().setTokens(accessToken, newRefreshToken)
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`

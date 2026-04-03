@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.Valid;
 import pl.editorial.archive.api.dto.PhotoDtos;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class PhotoController {
     @Operation(summary = "Upload zdjęcia (multipart/form-data)")
     public ResponseEntity<PhotoDtos.PhotoResponse> upload(
             @RequestPart("file") MultipartFile file,
-            @RequestPart("metadata") PhotoDtos.PhotoUploadRequest metadata,
+            @Valid @RequestPart("metadata") PhotoDtos.PhotoUploadRequest metadata,
             @AuthenticationPrincipal UUID uploaderId) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -96,13 +97,28 @@ public class PhotoController {
 
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
-    @Operation(summary = "Moje zdjęcia (wszystkie statusy)")
+    @Operation(summary = "Moje zdjęcia (wszystkie statusy lub filtr po statusie)")
     public ResponseEntity<Page<PhotoDtos.PhotoResponse>> myPhotos(
             @AuthenticationPrincipal UUID userId,
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
 
-        return ResponseEntity.ok(photoService.getMyPhotos(userId, PageRequest.of(page, size)));
+        PhotoStatus photoStatus = null;
+        if (status != null && !status.isBlank()) {
+            try { photoStatus = PhotoStatus.valueOf(status.toUpperCase()); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        return ResponseEntity.ok(photoService.getMyPhotos(userId, photoStatus, PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/my/{id}")
+    @PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
+    @Operation(summary = "Własne zdjęcie po ID (niezależnie od statusu)")
+    public ResponseEntity<PhotoDtos.PhotoResponse> myPhotoById(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UUID userId) {
+        return ResponseEntity.ok(photoService.getMyPhotoById(id, userId));
     }
 
     @PutMapping("/{id}")

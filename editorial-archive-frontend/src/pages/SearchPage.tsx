@@ -134,7 +134,7 @@ export default function SearchPage() {
                 onChange={(e) => setYearFrom(e.target.value)}
                 placeholder="np. 1945"
                 min={1800}
-                max={2024}
+                max={new Date().getFullYear()}
                 className="w-28 px-3 py-1.5 rounded-lg text-sm outline-none border"
                 style={{
                   background: 'var(--color-background)',
@@ -158,7 +158,7 @@ export default function SearchPage() {
                 onChange={(e) => setYearTo(e.target.value)}
                 placeholder="np. 1989"
                 min={1800}
-                max={2024}
+                max={new Date().getFullYear()}
                 className="w-28 px-3 py-1.5 rounded-lg text-sm outline-none border"
                 style={{
                   background: 'var(--color-background)',
@@ -217,7 +217,7 @@ export default function SearchPage() {
           <button
             disabled={activeParams.page === 0}
             aria-label="Poprzednia strona"
-            onClick={() => setActiveParams((p) => ({ ...p, page: (p.page ?? 1) - 1 }))}
+            onClick={() => setActiveParams((p) => ({ ...p, page: (p.page ?? 0) - 1 }))}
             className="px-4 py-2 rounded-full text-sm font-medium disabled:opacity-40 transition-colors hover:bg-[var(--color-surface-variant)]"
             style={{ color: 'var(--color-on-surface)' }}
           >

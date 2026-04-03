@@ -46,9 +46,16 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
+                // Specific protected paths BEFORE any photo wildcard
+                .requestMatchers(HttpMethod.GET, "/api/v1/photos/my").hasAnyRole("CREATOR", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/photos/my/*").hasAnyRole("CREATOR", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/photos/pending").hasRole("ADMIN")
                 // Publiczne endpointy
                 .requestMatchers(HttpMethod.GET,
-                    "/api/v1/photos/**",
+                    "/api/v1/photos",
+                    "/api/v1/photos/search",
+                    "/api/v1/photos/*",
+                    "/api/v1/photos/*/*",
                     "/api/v1/hierarchy/**",
                     "/api/v1/tags"
                 ).permitAll()
@@ -59,6 +66,7 @@ public class SecurityConfig {
                     "/api/v1/auth/login",
                     "/api/v1/auth/register",
                     "/api/v1/auth/refresh",
+                    "/api/v1/auth/logout",
                     "/oauth2/**",
                     "/login/oauth2/**"
                 ).permitAll()
@@ -74,7 +82,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/photos/*").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/photos/*").hasAnyRole("CREATOR", "ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/v1/photos/my").hasAnyRole("CREATOR", "ADMIN")
                 // Wymagają ADMIN
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")

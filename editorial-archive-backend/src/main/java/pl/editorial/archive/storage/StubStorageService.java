@@ -32,7 +32,9 @@ public class StubStorageService implements StorageService {
 
     @Override
     public String presignedUrl(String storageKey, int expirySeconds) {
-        return "/api/v1/photos/file/" + storageKey;
+        // In stub mode, files are not actually stored — return null so
+        // the frontend falls back to the placeholder image.
+        return null;
     }
 
     @Override

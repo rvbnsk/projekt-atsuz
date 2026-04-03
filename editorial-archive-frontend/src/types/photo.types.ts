@@ -2,8 +2,8 @@ export type PhotoStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'NEEDS_CORRECTIO
 
 export interface Photo {
   id: string
-  uploaderId: string
-  uploaderName: string
+  uploaderId: string | null
+  uploaderName: string | null
   hierarchyNodeId: string | null
   hierarchyNodeName: string | null
   title: string
@@ -11,7 +11,6 @@ export interface Photo {
   accessionNumber: string | null
   thumbnailUrl: string | null
   mediumUrl: string | null
-  storageKey: string
   originalFilename: string | null
   mimeType: string | null
   fileSizeBytes: number | null
@@ -23,7 +22,7 @@ export interface Photo {
   locationName: string | null
   latitude: number | null
   longitude: number | null
-  rightsStatement: string
+  rightsStatement: string | null
   licenseNotes: string | null
   status: PhotoStatus
   rejectionReason: string | null
@@ -48,7 +47,6 @@ export interface PhotoSearchParams {
   lat?: number
   lng?: number
   radiusKm?: number
-  status?: PhotoStatus
   page?: number
   size?: number
   sort?: string

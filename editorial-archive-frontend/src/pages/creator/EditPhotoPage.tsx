@@ -25,15 +25,7 @@ export default function EditPhotoPage() {
   const navigate = useNavigate()
   const { data: photo, isLoading } = useQuery<Photo | null>({
     queryKey: ['my-photo-edit', id],
-    queryFn: async () => {
-      try {
-        return await photosApi.getById(id!)
-      } catch {
-        // Photo may be PENDING/REJECTED — fetch from my photos list
-        const list = await photosApi.myPhotos({ size: 200 })
-        return list.data.find((p) => p.id === id) ?? null
-      }
-    },
+    queryFn: () => photosApi.myPhotoById(id!),
     enabled: !!id,
   })
   const { data: hierarchyTree } = useHierarchyTree()
@@ -44,6 +36,7 @@ export default function EditPhotoPage() {
   const [photoDateLabel, setPhotoDateLabel] = useState('')
   const [locationName, setLocationName] = useState('')
   const [nodeId, setNodeId] = useState('')
+  const [tagsInput, setTagsInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -57,6 +50,7 @@ export default function EditPhotoPage() {
     setPhotoDateLabel(photo.photoDateLabel ?? '')
     setLocationName(photo.locationName ?? '')
     setNodeId(photo.hierarchyNodeId ?? '')
+    setTagsInput(photo.tags.map((t) => t.name).join(', '))
   }, [photo])
 
   const handleSave = async (e: React.FormEvent) => {
@@ -71,6 +65,9 @@ export default function EditPhotoPage() {
         photoDateLabel: photoDateLabel.trim() || undefined,
         locationName: locationName.trim() || undefined,
         nodeId: nodeId || undefined,
+        tags: tagsInput.trim()
+          ? tagsInput.split(',').map((t) => t.trim()).filter(Boolean)
+          : [],
       })
       navigate('/my-collection')
     } catch {
@@ -267,6 +264,32 @@ export default function EditPhotoPage() {
               </select>
             </div>
           )}
+
+          <div>
+            <label
+              htmlFor="edit-tags"
+              className="block text-sm font-medium mb-1"
+              style={{ color: 'var(--color-on-surface)' }}
+            >
+              Tagi
+              <span className="ml-1 text-xs font-normal" style={{ color: 'var(--color-on-surface-variant)' }}>
+                (oddzielone przecinkami)
+              </span>
+            </label>
+            <input
+              id="edit-tags"
+              type="text"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="np. Warszawa, XIX wiek, architektura"
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+              style={{
+                background: 'var(--color-surface)',
+                borderColor: 'var(--color-outline)',
+                color: 'var(--color-on-surface)',
+              }}
+            />
+          </div>
 
           {error && (
             <p

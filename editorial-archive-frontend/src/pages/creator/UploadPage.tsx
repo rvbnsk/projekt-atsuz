@@ -29,7 +29,13 @@ export default function UploadPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [photoDateLabel, setPhotoDateLabel] = useState('')
+  const [photoDateFrom, setPhotoDateFrom] = useState('')
+  const [photoDateTo, setPhotoDateTo] = useState('')
   const [locationName, setLocationName] = useState('')
+  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('')
+  const [rightsStatement, setRightsStatement] = useState('')
+  const [tagsInput, setTagsInput] = useState('')
   const [nodeId, setNodeId] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -69,8 +75,16 @@ export default function UploadPage() {
         title: title.trim(),
         description: description.trim() || undefined,
         photoDateLabel: photoDateLabel.trim() || undefined,
+        photoDateFrom: photoDateFrom || undefined,
+        photoDateTo: photoDateTo || undefined,
         locationName: locationName.trim() || undefined,
+        latitude: latitude ? parseFloat(latitude) : undefined,
+        longitude: longitude ? parseFloat(longitude) : undefined,
+        rightsStatement: rightsStatement.trim() || undefined,
         nodeId: nodeId || undefined,
+        tags: tagsInput.trim()
+          ? tagsInput.split(',').map((t) => t.trim()).filter(Boolean)
+          : undefined,
       })
       navigate('/my-collection')
     } catch {
@@ -236,6 +250,155 @@ export default function UploadPage() {
                 }}
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="date-from"
+                className="block text-sm font-medium mb-1"
+                style={{ color: 'var(--color-on-surface)' }}
+              >
+                Data od
+              </label>
+              <input
+                id="date-from"
+                type="date"
+                value={photoDateFrom}
+                onChange={(e) => setPhotoDateFrom(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+                style={{
+                  background: 'var(--color-surface)',
+                  borderColor: 'var(--color-outline)',
+                  color: 'var(--color-on-surface)',
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="date-to"
+                className="block text-sm font-medium mb-1"
+                style={{ color: 'var(--color-on-surface)' }}
+              >
+                Data do
+              </label>
+              <input
+                id="date-to"
+                type="date"
+                value={photoDateTo}
+                onChange={(e) => setPhotoDateTo(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+                style={{
+                  background: 'var(--color-surface)',
+                  borderColor: 'var(--color-outline)',
+                  color: 'var(--color-on-surface)',
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="latitude"
+                className="block text-sm font-medium mb-1"
+                style={{ color: 'var(--color-on-surface)' }}
+              >
+                Szerokość geogr.
+              </label>
+              <input
+                id="latitude"
+                type="number"
+                step="0.000001"
+                min="-90"
+                max="90"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
+                placeholder="np. 52.2297"
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+                style={{
+                  background: 'var(--color-surface)',
+                  borderColor: 'var(--color-outline)',
+                  color: 'var(--color-on-surface)',
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="longitude"
+                className="block text-sm font-medium mb-1"
+                style={{ color: 'var(--color-on-surface)' }}
+              >
+                Długość geogr.
+              </label>
+              <input
+                id="longitude"
+                type="number"
+                step="0.000001"
+                min="-180"
+                max="180"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
+                placeholder="np. 21.0122"
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+                style={{
+                  background: 'var(--color-surface)',
+                  borderColor: 'var(--color-outline)',
+                  color: 'var(--color-on-surface)',
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="tags"
+              className="block text-sm font-medium mb-1"
+              style={{ color: 'var(--color-on-surface)' }}
+            >
+              Tagi
+              <span className="ml-1 text-xs font-normal" style={{ color: 'var(--color-on-surface-variant)' }}>
+                (oddzielone przecinkami)
+              </span>
+            </label>
+            <input
+              id="tags"
+              type="text"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="np. Warszawa, XIX wiek, architektura"
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+              style={{
+                background: 'var(--color-surface)',
+                borderColor: 'var(--color-outline)',
+                color: 'var(--color-on-surface)',
+              }}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="rights"
+              className="block text-sm font-medium mb-1"
+              style={{ color: 'var(--color-on-surface)' }}
+            >
+              Prawa / licencja
+            </label>
+            <input
+              id="rights"
+              type="text"
+              value={rightsStatement}
+              onChange={(e) => setRightsStatement(e.target.value)}
+              placeholder="np. Domena publiczna, CC BY 4.0"
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none border"
+              style={{
+                background: 'var(--color-surface)',
+                borderColor: 'var(--color-outline)',
+                color: 'var(--color-on-surface)',
+              }}
+            />
           </div>
 
           {flatNodes.length > 0 && (

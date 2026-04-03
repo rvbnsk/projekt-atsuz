@@ -1,5 +1,6 @@
 package pl.editorial.archive.api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import pl.editorial.archive.domain.photo.PhotoStatus;
 
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ public class PhotoDtos {
     public record TagDto(String id, String name, String slug) {}
 
     public record PhotoUploadRequest(
+        @NotBlank(message = "Tytuł nie może być pusty")
         String title,
         String description,
         String nodeId,
