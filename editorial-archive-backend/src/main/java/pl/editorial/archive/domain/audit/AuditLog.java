@@ -2,6 +2,7 @@ package pl.editorial.archive.domain.audit;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -39,7 +40,8 @@ public class AuditLog {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> details;
 
-    @Column(name = "ip_address", columnDefinition = "INET")
+    @Column(name = "ip_address", columnDefinition = "inet")
+    @ColumnTransformer(write = "?::inet")
     private String ipAddress;
 
     @CreationTimestamp
