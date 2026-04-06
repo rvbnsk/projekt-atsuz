@@ -77,6 +77,8 @@ public class SecurityConfig {
                 ).permitAll()
                 // Actuator health
                 .requestMatchers("/actuator/health").permitAll()
+                // Dev stub storage (only active when app.storage.use-stub=true)
+                .requestMatchers("/api/dev/files/**").permitAll()
                 // Wymagają CREATOR lub ADMIN
                 .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/photos/*").hasAnyRole("CREATOR", "ADMIN")
