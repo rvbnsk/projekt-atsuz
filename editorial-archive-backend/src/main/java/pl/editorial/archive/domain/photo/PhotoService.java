@@ -122,7 +122,7 @@ public class PhotoService {
         Photo saved = photoRepository.save(photo);
         auditService.log(uploaderId, "PHOTO_UPLOADED", "PHOTO", saved.getId(), null);
 
-        // Generowanie miniatur asynchronicznie (nie blokuje odpowiedzi)
+        // Asynchronously generate thumbnails (not blocking the upload response)
         imageProcessingService.generateAndStoreThumbnails(saved.getId(), saved.getStorageKey());
 
         return toResponse(saved);

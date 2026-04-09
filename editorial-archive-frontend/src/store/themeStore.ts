@@ -33,7 +33,7 @@ export const useThemeStore = create<ThemeState>()(
   ),
 )
 
-// Respektuj prefers-color-scheme przy pierwszym uruchomieniu
+// Initial theme setup based on localStorage or system preference
 if (typeof window !== 'undefined') {
   const stored = localStorage.getItem('editorial-archive-theme')
   if (!stored) {

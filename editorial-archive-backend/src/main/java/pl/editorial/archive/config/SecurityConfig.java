@@ -49,7 +49,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/photos/my").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/v1/photos/my/*").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/v1/photos/pending").hasRole("ADMIN")
-                // Publiczne endpointy
                 .requestMatchers(HttpMethod.GET,
                     "/api/v1/photos",
                     "/api/v1/photos/search",
@@ -79,15 +78,12 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/health").permitAll()
                 // Dev stub storage (only active when app.storage.use-stub=true)
                 .requestMatchers("/api/dev/files/**").permitAll()
-                // Wymagają CREATOR lub ADMIN
                 .requestMatchers(HttpMethod.POST, "/api/v1/photos").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/photos/*").hasAnyRole("CREATOR", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/photos/*").hasAnyRole("CREATOR", "ADMIN")
-                // Wymagają ADMIN
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/v1/photos/*/status").hasRole("ADMIN")
-                // Pozostałe — wymagają auth
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -82,7 +82,7 @@ public class AuthService {
             throw new BusinessException("USER_BLOCKED", "Konto zostało zablokowane");
         }
 
-        // Rotacja refresh tokena
+        // Invalidate the old refresh token and issue a new one
         refreshTokenRepository.delete(storedToken);
         String newRawRefreshToken = generateRawRefreshToken();
         saveRefreshToken(user, newRawRefreshToken);

@@ -31,7 +31,7 @@ public class HierarchyService {
     }
 
     public List<HierarchyDtos.BreadcrumbResponse> getBreadcrumbs(UUID id) {
-        findOrThrow(id); // walidacja istnienia
+        findOrThrow(id);
         return hierarchyRepository.findBreadcrumbs(id).stream()
                 .map(n -> new HierarchyDtos.BreadcrumbResponse(
                         n.getId().toString(), n.getName(), n.getSlug(), n.getLevel()))

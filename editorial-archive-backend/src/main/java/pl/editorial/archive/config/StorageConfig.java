@@ -35,7 +35,7 @@ public class StorageConfig {
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
-                .forcePathStyle(true) // wymagane dla MinIO
+                .forcePathStyle(true)
                 .build();
     }
 

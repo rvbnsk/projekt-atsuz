@@ -16,7 +16,7 @@ public class CleanupScheduler {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Scheduled(cron = "0 0 3 * * *") // Codziennie o 3:00
+    @Scheduled(cron = "0 0 3 * * *") // Schedule to run daily at 3 AM
     @Transactional
     public void cleanupExpiredRefreshTokens() {
         long deleted = 0;
