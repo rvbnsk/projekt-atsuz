@@ -24,7 +24,7 @@ frontend (React)  ──REST API──►  backend (Spring Boot)  ──JDBC─�
 - **Maven 3.9+**
 - **Node.js 20+** + **npm**
 
-### 1. Baza danych (PostgreSQL + MinIO)
+### Baza danych (PostgreSQL + MinIO)
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
@@ -33,7 +33,7 @@ docker compose -f docker-compose.dev.yml up -d
 - PostgreSQL: `localhost:5432`
 - MinIO Console: http://localhost:9001 (login: `minioadmin` / `minioadmin`)
 
-### 2. Konfiguracja i uruchomienie backendu
+### Konfiguracja i uruchomienie backendu
 
 ```bash
 cd editorial-archive-backend
@@ -42,7 +42,7 @@ mvn spring-boot:run
 
 Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-### 3. Konfiguracja i uruchomienie frontend
+### Konfiguracja i uruchomienie frontend
 
 ```bash
 cd editorial-archive-frontend
@@ -54,7 +54,7 @@ Frontend dostępny na: http://localhost:5173
 
 ---
 
-## 8. Uruchomienie
+### Uruchomienie
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
